@@ -7,12 +7,16 @@ var options = {
   type: 'text', // perform ocr to get the text within the scanned image
 };
 
-var processor = pdf_extract(absolute_path_to_pdf, options, function(err) {
-  if (err) {
-    console.log(err);
-    // return callback(err);
+var processor = pdf_extract(
+  '/home/samundrak/Documents/ books/javascript-the-good-parts.pdf',
+  options,
+  function(err) {
+    if (err) {
+      console.log(err);
+      // return callback(err);
+    }
   }
-});
+);
 
 const paragraphsMap = new Map();
 const pages = new Map();
@@ -30,10 +34,10 @@ const isLineTopic = (line, para) => {
   }
   return true;
 };
-const parseParagraph = paragraph => {
+const parseParagraph = (paragraph) => {
   const para = paragraph.split(/\n/);
   let topic = para[0];
-  const lineLengths = para.map(item => item.length);
+  const lineLengths = para.map((item) => item.length);
   const maxLine = Math.max(lineLengths);
   const isTopic = isLineTopic(topic);
   if (!isTopic) {
@@ -46,22 +50,23 @@ const parseParagraph = paragraph => {
 };
 
 processor.on('complete', function(data) {
-  data.text_pages.slice(10, 11).forEach((page, pageNumber) => {
-    const paragraphs = page.split(/\n\n\n?\n?\n?/);
-    const paragraphIndexes = [];
-    paragraphs.forEach(paragraph => {
-      const parsedParagraph = parseParagraph(paragraph);
-      if (parsedParagraph.topic) {
-        topics.push({
-          topicIndexedAt: paraCounter,
-          topic: parsedParagraph.topic,
-        });
-      }
-      paragraphsMap.set(paraCounter, parsedParagraph);
-      paragraphIndexes.push(paraCounter);
-      paraCounter++;
-    });
-    pages.set(pageNumber, paragraphIndexes);
+  data.text_pages.slice(97, 98).forEach((page, pageNumber) => {
+    console.log(page);
+    // const paragraphs = page.split(/\n\n\n?\n?\n?/);
+    // const paragraphIndexes = [];
+    // paragraphs.forEach((paragraph) => {
+    //   const parsedParagraph = parseParagraph(paragraph);
+    //   if (parsedParagraph.topic) {
+    //     topics.push({
+    //       topicIndexedAt: paraCounter,
+    //       topic: parsedParagraph.topic,
+    //     });
+    //   }
+    //   paragraphsMap.set(paraCounter, parsedParagraph);
+    //   paragraphIndexes.push(paraCounter);
+    //   paraCounter++;
+    // });
+    // pages.set(pageNumber, paragraphIndexes);
   });
 
   console.log(pages);
